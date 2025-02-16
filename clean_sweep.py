@@ -109,7 +109,12 @@ class CleanSweepApp(QMainWindow):
         super().__init__()
         self.setWindowTitle('CleanSweep')
         self.setGeometry(100, 100, 1000, 600)
-        self.setWindowIcon(QIcon('app.ico'))  # アプリケーションアイコンを設定
+
+        # アプリケーションアイコンの設定（絶対パスを使用）
+        icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app.ico')
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+
         self.search_thread = None
 
         # ウィンドウを画面中央に配置
