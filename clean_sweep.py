@@ -178,20 +178,42 @@ class CleanSweepApp(QMainWindow):
         file_types_group = QWidget()
         file_types_layout = QVBoxLayout(file_types_group)
         file_types_layout.setAlignment(Qt.AlignTop)  # 上揃え
-        file_types_layout.addWidget(QLabel("クリーンアップ対象:"))
+
+        # クリーンアップ対象のヘッダー部分（ラベル + ボタン）
+        header_layout = QHBoxLayout()
+        header_layout.addWidget(QLabel("クリーンアップ対象:"))
+
+        # 全てチェックボタンを右揃えで追加
+        check_all_types_btn = QPushButton("全てチェック")
+        check_all_types_btn.setMaximumWidth(100)  # ボタンの幅を制限
+        check_all_types_btn.clicked.connect(self.check_all_file_types)
+        header_layout.addStretch()  # 左側にスペースを追加して右揃えに
+        header_layout.addWidget(check_all_types_btn)
+
+        file_types_layout.addLayout(header_layout)
 
         self.file_types = {
             "Zone.Identifier": QCheckBox("Windows Zone.Identifier ファイル"),
             "Thumbs.db": QCheckBox("Windows サムネイルファイル (Thumbs.db)"),
             ".DS_Store": QCheckBox("macOS システムファイル (.DS_Store)"),
             "._*": QCheckBox("macOS リソースフォーク (._*)"),
-            ".AppleDouble/": QCheckBox("macOS リソースフォークディレクトリ (.AppleDouble)"),
+            ".AppleDouble/": QCheckBox(
+                "macOS リソースフォークディレクトリ (.AppleDouble)"
+            ),
             ".fseventsd/": QCheckBox("macOS ファイルシステムイベントログ (.fseventsd)"),
-            ".Spotlight-V100/": QCheckBox("macOS Spotlightインデックス (.Spotlight-V100)"),
+            ".Spotlight-V100/": QCheckBox(
+                "macOS Spotlightインデックス (.Spotlight-V100)"
+            ),
             ".AppleDB/": QCheckBox("macOS AppleShareデータベース (.AppleDB)"),
-            ".AppleDesktop/": QCheckBox("macOS デスクトップデータベース (.AppleDesktop)"),
-            ".TemporaryItems/": QCheckBox("一時ファイル格納ディレクトリ (.TemporaryItems)"),
-            "Network Trash Folder/": QCheckBox("ネットワークゴミ箱 (Network Trash Folder)"),
+            ".AppleDesktop/": QCheckBox(
+                "macOS デスクトップデータベース (.AppleDesktop)"
+            ),
+            ".TemporaryItems/": QCheckBox(
+                "一時ファイル格納ディレクトリ (.TemporaryItems)"
+            ),
+            "Network Trash Folder/": QCheckBox(
+                "ネットワークゴミ箱 (Network Trash Folder)"
+            ),
         }
 
         for checkbox in self.file_types.values():
@@ -208,7 +230,19 @@ class CleanSweepApp(QMainWindow):
         targets_group = QWidget()
         targets_layout = QVBoxLayout(targets_group)
         targets_layout.setAlignment(Qt.AlignTop)  # 上揃え
-        targets_layout.addWidget(QLabel("検索対象ディレクトリ:"))
+
+        # 検索対象ディレクトリのヘッダー部分（ラベル + ボタン）
+        targets_header_layout = QHBoxLayout()
+        targets_header_layout.addWidget(QLabel("検索対象ディレクトリ:"))
+
+        # 全てチェックボタンを右揃えで追加
+        check_all_dirs_btn = QPushButton("全てチェック")
+        check_all_dirs_btn.setMaximumWidth(100)  # ボタンの幅を制限
+        check_all_dirs_btn.clicked.connect(self.check_all_target_dirs)
+        targets_header_layout.addStretch()  # 左側にスペースを追加して右揃えに
+        targets_header_layout.addWidget(check_all_dirs_btn)
+
+        targets_layout.addLayout(targets_header_layout)
 
         self.target_dirs = {}
 
@@ -313,6 +347,16 @@ class CleanSweepApp(QMainWindow):
         buttons_layout.addWidget(self.cleanup_btn)
 
         layout.addLayout(buttons_layout)
+
+    def check_all_file_types(self):
+        """クリーンアップ対象の全てのチェックボックスをオンにする"""
+        for checkbox in self.file_types.values():
+            checkbox.setChecked(True)
+
+    def check_all_target_dirs(self):
+        """検索対象ディレクトリの全てのチェックボックスをオンにする"""
+        for checkbox in self.target_dirs.values():
+            checkbox.setChecked(True)
 
     def add_custom_directory(self):
         dir_path = QFileDialog.getExistingDirectory(self, "ディレクトリを選択")
